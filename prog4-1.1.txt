@@ -1,0 +1,132 @@
+#include <iostream>
+using namespace std;
+
+int main() {
+    int n, m;
+    cout << "VNESI BROJ NA TEMINJA I REBRA" << endl;
+    cin >> n >> m;
+
+    int adj[100][100] = {0};
+
+    cout << "VNESI REBRA (u v): " << endl;
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+
+        adj[u][v] = 1;
+        adj[v][u] = 1;
+    }
+
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            cout << adj[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
+---------------------------------------------------
+#include <iostream>
+#include <climits>
+using namespace std;
+
+struct Edge {
+    int u, v, w; 
+};
+
+int main() {
+    int V, E;
+    cout << "Vnesi broj na teminja i rebra \n";
+    cin >> V >> E;
+
+    Edge edges[100];
+    cout << "Vnesi rebra (u v w):\n";
+    for (int i = 0; i < E; i++) {
+        cin >> edges[i].u >> edges[i].v >> edges[i].w;
+    }
+
+    int dist[100]; // rastojnija
+    for (int i = 0; i < V; i++) dist[i] = INT_MAX; 
+    dist[0] = 0; // pocnuvame od 0.
+
+    for (int i = 0; i < V - 1; i++) {
+        for (int j = 0; j < E; j++) {
+            int u = edges[j].u;
+            int v = edges[j].v;
+            int w = edges[j].w;
+            if (dist[u] + w < dist[v]) {
+                dist[v] = dist[u] + w;
+            }
+        }
+    }
+
+   cout << "Najkratko rastojanie od 0:" << endl;
+    for (int i = 0; i < V; i++) {
+        cout << "do " << i << " = " << dist[i] << "\n";
+    }
+
+    return 0;
+}
+--------------------------------------------------
+#include <iostream>
+#include <climits>
+using namespace std;
+
+const int INF = INT_MAX; 
+
+int main() {
+    int n, m;
+    cout << "Vnesi broj na teminja i rebra \n";
+    cin >> n >> m;
+
+    // matrica
+    int graph[100][100];
+    for (int i = 0; i < n; i++)
+        for (int j = 0; j < n; j++)
+            graph[i][j] = INF; // ako nema rebro
+
+    cout << "Vnesi rebra(u v w)/n" << endl;
+    for (int i = 0; i < m; i++) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        graph[u][v] = w;
+        graph[v][u] = w; // deka e neorientiran
+    }
+
+    int start = 0; // start
+    int dist[100]; // n.pat
+    bool visited[100];
+
+    for (int i = 0; i < n; i++) {
+        dist[i] = INF;
+        visited[i] = false;
+    }
+    dist[start] = 0;
+
+    for (int step = 0; step < n - 1; step++) {
+        // barame neposeteno teme so najmalo rastojanie
+        int u = -1;
+        for (int i = 0; i < n; i++) {
+            if (!visited[i] && (u == -1 || dist[i] < dist[u])) {
+                u = i;
+            }
+        }
+
+        visited[u] = true;
+
+        // update na sosednite teminja
+        for (int v = 0; v < n; v++) {
+            if (graph[u][v] != INF && dist[u] + graph[u][v] < dist[v]) {
+                dist[v] = dist[u] + graph[u][v];
+            }
+        }
+    }
+
+    cout << "Najkratko rastojanie od 0:" << endl;
+    for (int i = 0; i < n; i++) {
+        cout << "do " << i << " = " << dist[i] << endl;
+    }
+
+    return 0;
+}
