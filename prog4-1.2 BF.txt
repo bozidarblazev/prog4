@@ -1,0 +1,107 @@
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <climits> 
+
+using namespace std;
+
+struct Rebro {
+    int od;
+    int doo;
+    int tezina;
+};
+
+int main() {
+    srand((unsigned)time(nullptr));
+
+    int teminja = rand() % 49 + 2; // broj na teminja od 2 do 50
+    int dopolnitelni = rand() % teminja;  // dopolnitelni rebra (0-teminja-1)
+
+    vector<Rebro> rebra;
+
+    // praime grafot da bide povrzan
+    for (int i = 2; i <= teminja; ++i) {
+        int t = rand() % 51; // tezina  0-50
+        rebra.push_back({ i - 1, i, t });
+        rebra.push_back({ i, i - 1, t });
+    }
+
+    // dodavame slucajni dopolnitelni rebra. Mozat da imaat i neg. tezina
+    for (int i = 0; i < dopolnitelni; ++i) {
+        int a = rand() % teminja + 1;
+        int b = rand() % teminja + 1;
+        if (a == b) { --i; continue; }
+        int t = rand() % 71 - 20; // tezina od -20 do 50
+        rebra.push_back({ a, b, t });
+    }
+
+    // go zapisuvame grafot 
+    ofstream foutGraf(R"(C:\Users\bozid\Downloads\pero.txt)");
+    if (!foutGraf) {
+        cerr << "Ne moze da se otvori fajlot\n";
+        return 1;
+    }
+    foutGraf << "------- NOV GRAF -------\n";
+    foutGraf << "Teminja: " << teminja << "\n";
+    foutGraf << "Rebra: " << rebra.size() << "\n";
+    foutGraf << "Od  Do  Tezina\n";
+    for (const auto& r : rebra) {
+        foutGraf << r.od << " " << r.doo << " " << r.tezina << "\n";
+    }
+    foutGraf.close();
+
+    //belman-Ford algoritam 
+    const int BESKRAJ = 1000000000;
+    vector<int> rastojanie(teminja + 1, BESKRAJ);
+    rastojanie[1] = 0; // rastojanie do pochetnoto teme (1) e 0
+
+    // gi relaksirame site rebra (teminja - 1) pati
+    for (int i = 1; i <= teminja - 1; ++i) {
+        bool promena = false;
+        for (const auto& r : rebra) {
+            if (rastojanie[r.od] != BESKRAJ && rastojanie[r.od] + r.tezina < rastojanie[r.doo]) {
+                rastojanie[r.doo] = rastojanie[r.od] + r.tezina;
+                promena = true;
+            }
+        }
+        if (!promena) break; // ako nema promeni zavrsuvame
+    }
+
+    // proveruvame za negativen ciklus
+    bool negativenCiklus = false;
+    for (const auto& r : rebra) {
+        if (rastojanie[r.od] != BESKRAJ && rastojanie[r.od] + r.tezina < rastojanie[r.doo]) {
+            negativenCiklus = true;
+            break;
+        }
+    }
+
+    // zapisuvame rezultati 
+    ofstream foutRezultat(R"(C:\Users\bozid\Downloads\peroR.txt)");
+    if (!foutRezultat) {
+        cerr << "Ne moze da se otvori fajlot\n";
+        return 1;
+    }
+    foutRezultat << "------- REZULTAT ZA NOV GRAF -------\n";
+    if (negativenCiklus) {
+        foutRezultat << "Ima negativen ciklus'\n";
+    }
+    else {
+        foutRezultat << "Najkratki rastojanija od temeto 1:\n";
+        for (int i = 1; i <= teminja; ++i) {
+            if (rastojanie[i] == BESKRAJ) foutRezultat << "do " << i << ": nedostapno\n";
+            else foutRezultat << "do " << i << ": " << rastojanie[i] << "\n";
+        }
+    }
+    foutRezultat.close();
+
+
+    cout << "Se generira graf so " << teminja << " teminja i "
+        << rebra.size() << " rebra.\n";
+    if (negativenCiklus)
+        cout << "Ima negativen ciklus! Pogledni vo Result.txt\n";
+    else
+        cout << "Najkratkite rastojanija se zapishani vo Result.txt\n";
+
+    return 0;
+}
