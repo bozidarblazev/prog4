@@ -1,0 +1,84 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <limits>
+using namespace std;
+
+const long long INF = 1000000000000LL; 
+
+struct Edge {
+    long long u; 
+    long long v; 
+    long long w; 
+};
+
+// f-ja za suma na najkratki rastojanija
+// pero e indeks na rebroto sto go isfrlame (ако pero == -1 site se zemeni vo predvid)
+// l ako ne se povrzani
+long long suma (int n, const vector<Edge>& edges, int pero, long long l) {
+    // dp[i][j] = najkratik pat i,j
+    vector<vector<long long>> dp(n + 1, vector<long long>(n + 1, INF));
+
+    // pat od teme do samo sebe e 0
+    for (int i = 1; i <= n; ++i) dp[i][i] = 0;
+
+    for (int i = 0; i < (int)edges.size(); ++i) {
+        if (i == pero) continue; //ako e trgnato skokni
+        int a = (int)edges[i].u;
+        int b = (int)edges[i].v;
+        long long w = edges[i].w;
+        if (w < dp[a][b]) dp[a][b] = w;
+        if (w < dp[b][a]) dp[b][a] = w; // neorientiran
+    }
+
+    // so floyd warshall proveruvame dali ima pokratok pat preku k
+    for (int k = 1; k <= n; ++k) {
+        for (int i = 1; i <= n; ++i) {
+            if (dp[i][k] == INF) continue; // ako nema pat i,k skokni
+            for (int j = 1; j <= n; ++j) {
+                if (dp[k][j] == INF) continue; // ako nema pat k.j preskokni
+                long long cand = dp[i][k] + dp[k][j];
+                if (cand < dp[i][j]) dp[i][j] = cand;
+            }
+        }
+    }
+
+    // Vkuopna tezina
+    long long total = 0;
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= n; ++j) {
+            if (dp[i][j] < INF) total += dp[i][j];
+            else total += l;
+        }
+    }
+    return total;
+}
+
+int main() {
+    int n;               // br. teminja
+    long long m, l;      // br. rebra l za nepovrzani
+
+    while (cin >> n >> m >> l) {
+        vector<Edge> edgelist;
+        edgelist.reserve((size_t)m);
+        for (long long i = 0; i < m; ++i) {
+            long long a, b, w;
+            cin >> a >> b >> w;
+            edgelist.push_back({ a, b, w });
+        }
+
+       
+        long long suma1 = suma(n, edgelist, -1, l);
+
+        // z sekoe rebro probuvame bez nego,i go naogjame maksumumot na stetata
+        long long worst_if_one_edge_removed = 0;
+        for (int i = 0; i < (int)edgelist.size(); ++i) {
+            long long cur = suma(n, edgelist, i, l);
+            if (cur > worst_if_one_edge_removed) worst_if_one_edge_removed = cur;
+        }
+
+        cout << suma1 << " " << worst_if_one_edge_removed << "\n";
+    }
+
+    return 0;
+}

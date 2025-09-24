@@ -1,0 +1,139 @@
+#include <iostream>
+#include <vector>
+#include <limits>
+using namespace std;
+
+struct Edge {
+    int from;
+    int to;
+    int weight;
+};
+
+// funkcija sto go presmetuva indeksot na rebroto i,j vo edges
+// Site parovi i, j gi redime vo redovi eden po eden
+inline int edge_index(int i, int j, int v) {
+    return (i - 1) * v + (j - 1);
+}
+
+int main() {
+    cout << " **************************************************" << '\n';
+    cout << "Vnesi broj na teminja v i broj na rebra e :\n";
+
+    int v, e;
+    cin >> v >> e;
+
+    const int INF = 1000000000; 
+
+    vector<Edge> edges;
+    edges.reserve(v * v);
+
+    // Inicijalizacija
+    //0 ako i == j jamka
+    //INF ako i != j nema pat
+    for (int i = 1; i <= v; ++i) {
+        for (int j = 1; j <= v; ++j) {
+            int w = (i == j) ? 0 : INF;
+            edges.push_back({ i, j, w });
+        }
+    }
+
+    // Vnesuvanje na rebtara
+    cout << "Vnesi rebra vo format: od do tezina (na primer: 1 3 5)\n";
+    for (int x = 0; x < e; ++x) {
+        int a, b, w;
+        cin >> a >> b >> w;
+        int idx = edge_index(a, b, v);     // racuname kade vo edges se naoga rebroto (a, b)
+        if (w < edges[idx].weight) {       // cuvame samo najmala tezina ako ima povekje rebra
+            edges[idx].weight = w;
+        }
+    }
+
+    // in_edges[k] se site rebra sto zavrsuvaat vo teme k
+    // out_edges[k] e site rebra sto pocnuvaat od teme k
+    vector<vector<int>> in_edges(v + 1), out_edges(v + 1);
+    for (int i = 0; i < (int)edges.size(); ++i) {
+        int a = edges[i].from;
+        int b = edges[i].to;
+        out_edges[a].push_back(i); // indeksot i izleguva od a
+        in_edges[b].push_back(i);  // indeksot vleguva vo teme b
+    }
+
+    // glaven floyd–Warshall ciklus
+    // K e vnatresno teme. Probuvame da gi skratime site pateki i do j  kombinirame i,k i k,j.
+
+    for (int k = 1; k <= v; ++k) {
+        cout << "****************************************************" << '\n';
+        cout << "Procesirame vnatresno teme k = " << k << '\n';
+
+        // za sekoj pat i do k
+        for (int in_idx : in_edges[k]) {
+            int i_node = edges[in_idx].from;    
+            int dist_ik = edges[in_idx].weight; 
+            if (dist_ik >= INF) continue;       // ako i,k ne postoi
+
+            // i za sekoj pat k doj
+            for (int out_idx : out_edges[k]) {
+                int j_node = edges[out_idx].to;   
+                int dist_kj = edges[out_idx].weight;
+                if (dist_kj >= INF) continue;        
+
+                // candidate e noviot pat i do j preku k
+                long long candidate = (long long)dist_ik + (long long)dist_kj;
+                if (candidate < -INF) candidate = -INF; 
+                if (candidate > INF) candidate = INF;
+
+                int idx_ij = edge_index(i_node, j_node, v); // indeks za i do j
+
+                // Ako noviot pat e pokratok, update
+                if ((int)candidate < edges[idx_ij].weight) {
+                    edges[idx_ij].weight = (int)candidate;
+                    cout << "  Updated: od " << i_node << " do " << j_node
+                        << " = " << edges[idx_ij].weight
+                        << " (preku " << k << ")\n";
+                }
+            }
+        }
+
+        // Pechati sostojbata posle ova k
+        cout << "Sostojba posle k = " << k << ":\n";
+        for (const Edge& ed : edges) {
+            if (ed.weight >= INF / 2) {
+                cout << "  Od " << ed.from << " do " << ed.to << " : NEDOSTAPNO\n";
+            }
+            else {
+                cout << "  Od " << ed.from << " do " << ed.to << " : " << ed.weight << '\n';
+            }
+        }
+    }
+
+    cout << "******************************************************" << '\n';
+    cout << "Konecen rezultat, najkratok pat za sekoj par:\n";
+    for (const Edge& ed : edges) {
+        if (ed.weight >= INF / 2) {
+            cout << "Od " << ed.from << " do " << ed.to << " : NEDOSTAPNO\n";
+        }
+        else {
+            cout << "Od " << ed.from << " do " << ed.to << " : " << ed.weight << '\n';
+        }
+    }
+
+    // Proverka za negativen ciklus:
+    // Ako rastojanieto od jazel do samiot sebe< 0
+    bool negCycle = false;
+    for (int i = 1; i <= v; ++i) {
+        int idx = edge_index(i, i, v);
+        if (edges[idx].weight < 0) {
+            negCycle = true;
+            break;
+        }
+    }
+    if (negCycle) {
+        cout << "\nDetektiran e negativen ciklus!\n";
+    }
+    else {
+        cout << "\nNe e detektiran negativen ciklus.\n";
+    }
+
+    cout << "************************************************************" << '\n';
+    return 0;
+}
