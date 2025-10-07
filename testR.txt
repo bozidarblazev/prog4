@@ -1,0 +1,24 @@
+------- REZULTAT ZA NOV GRAF -------
+Najkratki rastojanija od temeto 1:
+do 1: 0
+do 2: 31
+do 3: 71
+do 4: 107
+do 5: 139
+do 6: 147
+do 7: 184
+do 8: 210
+do 9: 222
+do 10: 255
+do 11: 255
+do 12: 256
+do 13: 298
+do 14: 303
+do 15: 304
+do 16: 321
+do 17: 345
+do 18: 388
+do 19: 387
+do 20: 352
+do 21: 341
+do 22: 366
