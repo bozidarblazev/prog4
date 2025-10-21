@@ -1,0 +1,87 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+// naogja eden pat s do t
+// vrakja kolku protok  moze da prodolzi po toj pat 
+int pronajdiPatDFS(int s, int t, vector<vector<int>>& graf, vector<int>& poseteni, int mm) {
+    if (s == t) {
+        // stignavme do t. vrakjame protok.
+        return mm;
+    }
+    poseteni[s] = 1; // oznaci momentalnoto teme poseteno
+    int n = graf.size();
+    for (int sosed = 0; sosed < n; ++sosed) {
+        if (!poseteni[sosed] && graf[s][sosed] > 0) {
+            // kolku mozeme da pratime natamu ,min od dosegasnoto i kapacitetot na toj segment
+            int moze = pronajdiPatDFS(sosed, t, graf, poseteni, min(mm, graf[s][sosed]));
+            if (moze > 0) {
+                // namaluvame kapacitetot po pravacot i zacuvuvame residual gr.
+                graf[s][sosed] -= moze;
+                graf[sosed][s] += moze;
+                return moze; // vrati kolku protok prodolzi
+            }
+        }
+    }
+    return 0; // nema pat
+}
+
+// F.F koristime DFS za da naogame aug. patista
+int izracunajMaksimalenProtok(vector<vector<int>> graf) {
+    int izvor = 0;
+    int n = graf.size();
+    int sliv = n - 1;
+    if (izvor == sliv) return 0;
+    int totalFlow = 0;
+
+    while (true) {
+        vector<int> poseteni(n, 0);
+        int protok = pronajdiPatDFS(izvor, sliv, graf, poseteni, 1000000000);
+        if (protok == 0) break; // nema povekje patista
+        totalFlow += protok;
+    }
+    return totalFlow;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int brojTeminja, brojRebra;
+    cin >> brojTeminja >> brojRebra;
+
+    // Vo matricata graf[a][b] e kapacitet a do b
+    vector<vector<int>> graf(brojTeminja, vector<int>(brojTeminja, 0));
+
+    // vnesi rebra
+    for (int i = 0; i < brojRebra; ++i) {
+        int od, doo, kap;
+        cin >> od >> doo >> kap;
+        graf[od][doo] = kap;
+    }
+
+    // prvicna vrednost na maksimalen protok bez izmeni
+    int maxProtok = izracunajMaksimalenProtok(graf);
+
+    // probuvame da go  trgneme sekoe rebro edno po edno,
+    //ja presmetuvame novata vrednost na maksimalen protok.
+    //ja zapazuvame minimalnata od tie vrednosti.
+    int minimalenPosleIzmena = maxProtok;
+    for (int i = 0; i < brojTeminja; ++i) {
+        for (int j = 0; j < brojTeminja; ++j) {
+            if (graf[i][j] != 0) {
+                int starKap = graf[i][j];
+                graf[i][j] = 0; //  otstranuvame
+                int novProtok = izracunajMaksimalenProtok(graf);
+                minimalenPosleIzmena = min(minimalenPosleIzmena, novProtok);
+                graf[i][j] = starKap; // vrati kapacitet
+            }
+        }
+    }
+
+    // pechati go najgolemiot protok i minimalniot posle trganje rebro
+    cout << maxProtok << '\n';
+    cout << minimalenPosleIzmena << '\n';
+    return 0;
+}

@@ -1,0 +1,71 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+// Funkcija  bara eden pat od s do t.(tocka)
+// vrakja kolku protok moze po toj pat
+int najdiPatDFS(int s, int t, vector<vector<int>>& mreza, vector<int>& poseteni, int moze) {
+    if (s == t) {
+        // Ako stigneme do t return protokot
+        return moze;
+    }
+
+    poseteni[s] = 1; //oznacuvame s poseteno
+
+    int n = mreza.size(); // br. teminja
+
+    // gigledame site sosedi  na s
+    for (int sosed = 0; sosed < n; sosed++) {
+        if (!poseteni[sosed] && mreza[s][sosed] > 0) {
+            // patot kje bide min od momentalniot protok i toj kapacite.
+            int novProtok = najdiPatDFS(sosed, t, mreza, poseteni, min(moze, mreza[s][sosed]));
+            if (novProtok > 0) {
+                // ako moze da se prenasoci protok:
+                // namaluvame kapacitet i dodavame residual gr.
+                mreza[s][sosed] -= novProtok;
+                mreza[sosed][s] += novProtok;
+                return novProtok;
+            }
+        }
+    }
+    return 0; // ako nema pat  s dot
+}
+
+// Funkcija.(tocka) go presmetuva maksimalniot protok s do t
+int fordFulkerson(vector<vector<int>> mreza, int s, int t) {
+    int vkupno = 0; // vkup. protok
+
+    while (true) {
+        vector<int> poseteni(mreza.size(), 0);
+        // barame pat
+        int protok = najdiPatDFS(s, t, mreza, poseteni, 1000000000);
+        if (protok == 0) break; // ako nema vise patista   kraj
+        vkupno += protok; 
+    }
+
+    return vkupno;
+}
+
+int main() {
+    int v, e; // broj  teminja i rebra.(tocka)
+    cin >> v >> e;
+
+    vector<vector<int>> mreza(v, vector<int>(v, 0));//inicijalvno 0 (u zagrada nula)
+
+    // vnesuvame rebra od d0 kapacitet
+    for (int i = 0; i < e; i++) {
+        int a, b, kap;
+        cin >> a >> b >> kap;
+        mreza[a][b] = kap;
+    }
+
+    int s = 0;       
+    int t = v - 1;   
+
+    int maxProtok = fordFulkerson(mreza, s, t);
+
+    cout << "Maksimalen protok: " << maxProtok << endl;
+
+    return 0;
+}
