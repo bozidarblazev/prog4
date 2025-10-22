@@ -1,0 +1,153 @@
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <algorithm>
+using namespace std;
+
+struct Rebro {
+    int doTeme;
+    int obratno;
+    int kapacitet;
+};
+
+struct Dinic {
+    int n;                   // br.teminja
+    int s;                   // izvor
+    int t;                   // slivnik
+    vector<vector<Rebro>> g; // adj.list
+    vector<int> nivo;        // nivoa. oddalecenost od izvorot
+    vector<int> pokazuvac;   // pokazuva kaj sme stignale
+    ofstream izlez;          // output fajlot.
+
+
+    Dinic(int n, int s, int t) {
+        this->n = n;
+        this->s = s;
+        this->t = t;
+        g.resize(n);
+        nivo.resize(n);
+        pokazuvac.resize(n);
+        izlez.open("C:/Users/bozid/Downloads/output.txt");
+    }
+
+    void dodajRebro(int od, int doo, int kap) {
+        // glavna nasoka na rebroto so kap. kap
+        Rebro napred = { doo, (int)g[doo].size(), kap };
+        // obratno rebro so kap.0
+        Rebro nazad = { od, (int)g[od].size(), 0 };
+        g[od].push_back(napred);
+        g[doo].push_back(nazad);
+    }
+
+    bool bfs() {
+        // site teminja se oznacuvaat neposeteni
+        for (int i = 0; i < n; i++) nivo[i] = -1;
+
+        vector<int> red;
+        red.push_back(s);
+        nivo[s] = 0;  // dka izvorot e na nulto nivo
+
+        // proveruvame  do koi t-nja mozeme da stigneme
+        for (int i = 0; i < (int)red.size(); i++) {
+            int v = red[i];
+            // gi proveruvame site rebra sto izleguvaat odd dadenoto teme
+            for (int j = 0; j < (int)g[v].size(); j++) {
+                Rebro& e = g[v][j];
+                // ako ima kapacitet i temeto do koe vodi nema nivo
+                if (e.kapacitet > 0 && nivo[e.doTeme] == -1) {
+                    // novoto teme go stvame nivo pogore
+                    nivo[e.doTeme] = nivo[v] + 1;
+                    red.push_back(e.doTeme);
+                }
+            }
+        }
+        // ako t ima nivo znaci ima pat do nego
+        return nivo[t] != -1;
+    }
+
+    int dfs(int v, int protok, vector<int>& pat) {
+        if (protok == 0) return 0;
+        // ako sme stignale do t
+        if (v == t) {
+            // vapisuvame pat
+            for (int i = 0; i < (int)pat.size(); i++) {
+                if (i) izlez << " ";
+                izlez << pat[i];
+            }
+            izlez << " (+" << protok << ")\n";
+            return protok;
+        }
+
+        // odime po rebrata od ova teme
+        for (int& i = pokazuvac[v]; i < (int)g[v].size(); i++) {
+            Rebro& e = g[v][i];
+            // ako ima kapacitet i odime na sledno nivo
+            if (e.kapacitet > 0 && nivo[e.doTeme] == nivo[v] + 1) {
+                pat.push_back(e.doTeme); // go dodavame vo mom. pat
+                // probaj da pratis protok natamu
+                int pushed = dfs(e.doTeme, min(protok, e.kapacitet), pat);
+                if (pushed > 0) {
+                    // namaluvame kapacitet na rebroto
+                    e.kapacitet -= pushed;
+                    // zgolemuvame kapacitet na obratnoto rebro
+                    g[e.doTeme][e.obratno].kapacitet += pushed;
+                    // se vrakjame nazad
+                    pat.pop_back();
+                    return pushed;
+                }
+                // ako e  neuspeshno trgni go i probaj so drugo rebro
+                pat.pop_back();
+            }
+        }
+        // nema vise pat do krajnoto teme
+        return 0;
+    }
+
+    int maxProtok() {
+        int vkupno = 0; // vk.protok
+        // dodeka ima nivo
+        while (bfs()) {
+            //  resetirame pozicijana pokazuv.
+            for (int i = 0; i < n; i++) pokazuvac[i] = 0;
+            vector<int> pat;
+            pat.push_back(s); // pocnuva od izvor
+            while (true) {
+                // probaj  protok od izvor do slivnik
+                int dodadeno = dfs(s, 1000000000, pat);
+                // ako nema vise izlevi
+                if (dodadeno == 0) break;
+                vkupno += dodadeno;
+            }
+        }
+        izlez.close();
+        return vkupno;
+    }
+};
+
+int main() {
+    ifstream vlez("C:/Users/bozid/Downloads/input.txt");
+    if (!vlez.is_open()) {
+        cout << "Nemoze da se otvori fajlot\n";
+        return 1;
+    }
+
+    int n, m, s, t;
+    vlez >> n >> m;
+    vlez >> s >> t;
+
+    Dinic d(n, s, t);
+
+    //citame rebra od fajlot
+    for (int i = 0; i < m; i++) {
+        int a, b, c;
+        vlez >> a >> b >> c;
+        d.dodajRebro(a, b, c);
+    }
+
+    vlez.close();
+    int rezultat = d.maxProtok();
+
+    cout << "Maksimalen protok " << rezultat << endl;
+
+    return 0;
+}
