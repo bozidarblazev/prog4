@@ -1,0 +1,203 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <climits>
+
+using namespace std;
+
+// probuva da prati odreden protok kon temeto v.
+ // Push prai ako ima preostanat kapacitet na rebroto (u, v) ili temeto u ima excess protok sto treba da go isprazni
+
+void PP(int u, int v,
+    vector<vector<int>>& kapacitet,
+    vector<vector<int>>& protok,
+    vector<int>& visina,
+    vector<int>& excess,
+    vector<int>& aktivni)
+{
+    //kolku kapacitet e ostanat na rebroto u v
+    int preostanat = kapacitet[u][v] - protok[u][v];
+
+    int kolicina = min(excess[u], preostanat);//maksimalna kolicina za push
+
+    // ako nema nisto za push izleguvame
+    if (kolicina <= 0) return;
+
+    cout << "push" << u << "  " << v << "  kolicina=" << kolicina
+        << "  (visina[u]=" << visina[u] << ", visina[v]=" << visina[v]
+        << ", excess[u]=" << excess[u] << ")\n";
+
+    //so push ja prenasocuvame kolicinata protok
+    protok[u][v] += kolicina;
+    protok[v][u] -= kolicina;
+
+    // ja azurirame vrednosta na excess vo u i v
+    excess[u] -= kolicina;
+    excess[v] += kolicina;
+
+    // ako v stanalo aktiven 
+    if (excess[v] == kolicina) {
+        aktivni.push_back(v);
+
+        cout << "za" << v << "excess=" << excess[v] << ")\n";
+    }
+}
+//relabel
+void H(int u, int n,
+    vector<vector<int>>& kapacitet,
+    vector<vector<int>>& protok,
+    vector<int>& visina)
+{
+    int najmala_visina = INT_MAX;
+
+    // go barame najniskiot sosed
+    for (int v = 0; v < n; v++) {
+        // validno rebro e ako ima preostanat kapacitet
+        if (kapacitet[u][v] - protok[u][v] > 0) {
+            najmala_visina = min(najmala_visina, visina[v]);
+        }
+    }
+
+    // ako najdeme validen sosed
+    if (najmala_visina < INT_MAX) {
+
+        cout << "relabel u=" << u
+            << " od h=" << visina[u]
+            << " na ha=" << najmala_visina + 1 << "\n";
+
+        visina[u] = najmala_visina + 1;
+    }
+}
+
+
+//H go prazni temeto u-probuva push kon site sosedi, ako ne uspee relabel soH, se dodeka excess ne stane nula. Sledno_rebro[u] e pointer koj sosed da go proverime sledno.
+
+void E(int u, int n,
+    vector<vector<int>>& kapacitet,
+    vector<vector<int>>& protok,
+    vector<int>& visina,
+    vector<int>& excess,
+    vector<int>& sledno_rebro,
+    vector<int>& aktivni)
+{
+    cout << "\ndischarge u=" << u << "  excess=" << excess[u]
+        << "  visina=" << visina[u] << "\n";
+
+    //dodeka ima excesss vo u
+    while (excess[u] > 0) {
+
+        // ako ima neprovereni sosedi
+        if (sledno_rebro[u] < n) {
+
+            int v = sledno_rebro[u];
+
+            cout << " proveri sosed v=" << v << "\n";
+
+            // proveruvame dali moze push kon v
+            bool ima_kapacitet = kapacitet[u][v] - protok[u][v] > 0;
+            bool admissible = visina[u] == visina[v] + 1;
+
+            if (ima_kapacitet && admissible) {
+                // push
+                PP(u, v, kapacitet, protok,
+                    visina, excess, aktivni);
+            }
+            else {
+                // ako ne moze push,go probuvame sledniot sosed
+                sledno_rebro[u]++;
+            }
+        }
+        else {
+          
+            cout << "   -> E nema be. relabel u=" << u << "\n";
+
+            // ako nema ni eden validen sosed toags relabel
+            H(u, n, kapacitet, protok, visina);
+
+            // pocnuvame od pocetokot
+            sledno_rebro[u] = 0;
+        }
+    }
+
+    cout << "konecen discharge u=" << u << ".(tocka)  excess=" << excess[u] << "\n";
+}
+
+//Glavnata funkcija prai Inicijalizacija na preflow stava height[s] i prakja najglem mozen protok od s kon site v. Aktivnite jazli so excess > 0 gi cuva
+// Dodeka ima aktivni teminja  bira edn i go prazni 
+// vrakja vkupen protok
+
+int maxFlow_PushRelabel(int izvor, int slivnik, int n,
+    vector<vector<int>>& kapacitet)
+{
+    // matrica na protok i pomosni vektori
+    vector<vector<int>> protok(n, vector<int>(n, 0));
+    vector<int> visina(n, 0);
+    vector<int> excess(n, 0);
+    vector<int> sledno_rebro(n, 0);
+    vector<int> aktivni;
+
+    // poceten uslov e source da ima visina n.
+    visina[izvor] = n;
+
+    // dodeluvame neogranicen excess na izvorot
+    excess[izvor] = INT_MAX;
+
+    cout << " Prvo push od izvorot " << izvor << "\n";
+
+    // najprvo push od izvorot do site sosedi
+    for (int v = 0; v < n; v++) {
+        if (kapacitet[izvor][v] > 0) {
+            PP(izvor, v, kapacitet,
+                protok, visina, excess, aktivni);
+        }
+    }
+
+    // dodeka ima aktivni temina
+    while (!aktivni.empty()) {
+
+        int u = aktivni.back();
+        aktivni.pop_back();
+
+        cout << "\n aktivno teme=" << u << " \n";
+
+        // s i t ne se procesiraat
+        if (u != izvor && u != slivnik) {
+            E(u, n, kapacitet, protok,
+                visina, excess, sledno_rebro, aktivni);
+        }
+    }
+
+    // presmetuvame vkupen protok
+    int rezultat = 0;
+    for (int u = 0; u < n; u++) {
+        rezultat += protok[u][slivnik];
+    }
+
+
+    cout << "\nProtok = " << rezultat << "\n";
+
+    return rezultat;
+}
+
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+
+    vector<vector<int>> kapacitet(n, vector<int>(n, 0));
+
+    for (int i = 0; i < m; i++) {
+        int u, v, w;
+        cin >> u >> v >> w;
+        kapacitet[u][v] = w;
+    }
+
+    int izvor, slivnik;
+    cin >> izvor >> slivnik;
+
+    int maksimum = maxFlow_PushRelabel(izvor, slivnik, n, kapacitet);
+
+    cout << maksimum;
+
+    return 0;
+}

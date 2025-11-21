@@ -1,0 +1,653 @@
+5 7
+0 1 10
+0 2 5
+1 2 15
+1 3 10
+2 4 10
+3 4 10
+2 3 10
+0 4
+ Prvo push od izvorot 0
+push0  1  kolicina=10  (visina[u]=5, visina[v]=0, excess[u]=2147483647)
+za1excess=10)
+push0  2  kolicina=5  (visina[u]=5, visina[v]=0, excess[u]=2147483637)
+za2excess=5)
+
+ aktivno teme=2
+
+discharge u=2  excess=5  visina=0
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+   -> E nema be. relabel u=2
+relabel u=2 od h=0 na ha=1
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+push2  3  kolicina=5  (visina[u]=1, visina[v]=0, excess[u]=5)
+za3excess=5)
+konecen discharge u=2.(tocka)  excess=0
+
+ aktivno teme=3
+
+discharge u=3  excess=5  visina=0
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+   -> E nema be. relabel u=3
+relabel u=3 od h=0 na ha=1
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+push3  4  kolicina=5  (visina[u]=1, visina[v]=0, excess[u]=5)
+za4excess=5)
+konecen discharge u=3.(tocka)  excess=0
+
+ aktivno teme=4
+
+ aktivno teme=1
+
+discharge u=1  excess=10  visina=0
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+   -> E nema be. relabel u=1
+relabel u=1 od h=0 na ha=2
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+push1  2  kolicina=10  (visina[u]=2, visina[v]=1, excess[u]=10)
+za2excess=10)
+konecen discharge u=1.(tocka)  excess=0
+
+ aktivno teme=2
+
+discharge u=2  excess=10  visina=1
+ proveri sosed v=3
+ proveri sosed v=4
+push2  4  kolicina=10  (visina[u]=1, visina[v]=0, excess[u]=10)
+konecen discharge u=2.(tocka)  excess=0
+
+Protok = 15
+15
+C:\Users\bozid\source\repos\Prog4-2.1-PR\Prog4-2.1-PR\x64\Debug\Prog4-2.1-PR.exe (process 23912) exited with code 0 (0x0).
+
+
+
+4 5
+0 1 8
+0 2 8
+1 3 8
+2 1 1
+2 3 8
+0 3
+ Prvo push od izvorot 0
+push0  1  kolicina=8  (visina[u]=4, visina[v]=0, excess[u]=2147483647)
+za1excess=8)
+push0  2  kolicina=8  (visina[u]=4, visina[v]=0, excess[u]=2147483639)
+za2excess=8)
+
+ aktivno teme=2
+
+discharge u=2  excess=8  visina=0
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+   -> E nema be. relabel u=2
+relabel u=2 od h=0 na ha=1
+ proveri sosed v=0
+ proveri sosed v=1
+push2  1  kolicina=1  (visina[u]=1, visina[v]=0, excess[u]=8)
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+push2  3  kolicina=7  (visina[u]=1, visina[v]=0, excess[u]=7)
+za3excess=7)
+konecen discharge u=2.(tocka)  excess=0
+
+ aktivno teme=3
+
+ aktivno teme=1
+
+discharge u=1  excess=9  visina=0
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+   -> E nema be. relabel u=1
+relabel u=1 od h=0 na ha=1
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+push1  3  kolicina=8  (visina[u]=1, visina[v]=0, excess[u]=9)
+ proveri sosed v=3
+   -> E nema be. relabel u=1
+relabel u=1 od h=1 na ha=2
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+push1  2  kolicina=1  (visina[u]=2, visina[v]=1, excess[u]=1)
+za2excess=1)
+konecen discharge u=1.(tocka)  excess=0
+
+ aktivno teme=2
+
+discharge u=2  excess=1  visina=1
+ proveri sosed v=3
+push2  3  kolicina=1  (visina[u]=1, visina[v]=0, excess[u]=1)
+konecen discharge u=2.(tocka)  excess=0
+
+Protok = 16
+16
+
+
+8 11
+0 1 1
+0 2 1
+0 3 1
+1 4 1
+1 5 1
+1 6 1
+2 5 1
+3 5 1
+4 7 1
+5 7 1
+6 7 1
+0 7
+ Prvo push od izvorot 0
+push0  1  kolicina=1  (visina[u]=8, visina[v]=0, excess[u]=2147483647)
+za1excess=1)
+push0  2  kolicina=1  (visina[u]=8, visina[v]=0, excess[u]=2147483646)
+za2excess=1)
+push0  3  kolicina=1  (visina[u]=8, visina[v]=0, excess[u]=2147483645)
+za3excess=1)
+
+ aktivno teme=3
+
+discharge u=3  excess=1  visina=0
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=3
+relabel u=3 od h=0 na ha=1
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+push3  5  kolicina=1  (visina[u]=1, visina[v]=0, excess[u]=1)
+za5excess=1)
+konecen discharge u=3.(tocka)  excess=0
+
+ aktivno teme=5
+
+discharge u=5  excess=1  visina=0
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=5
+relabel u=5 od h=0 na ha=1
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+push5  7  kolicina=1  (visina[u]=1, visina[v]=0, excess[u]=1)
+za7excess=1)
+konecen discharge u=5.(tocka)  excess=0
+
+ aktivno teme=7
+
+ aktivno teme=2
+
+discharge u=2  excess=1  visina=0
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=2
+relabel u=2 od h=0 na ha=2
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+push2  5  kolicina=1  (visina[u]=2, visina[v]=1, excess[u]=1)
+za5excess=1)
+konecen discharge u=2.(tocka)  excess=0
+
+ aktivno teme=5
+
+discharge u=5  excess=1  visina=1
+ proveri sosed v=7
+   -> E nema be. relabel u=5
+relabel u=5 od h=1 na ha=2
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+push5  3  kolicina=1  (visina[u]=2, visina[v]=1, excess[u]=1)
+za3excess=1)
+konecen discharge u=5.(tocka)  excess=0
+
+ aktivno teme=3
+
+discharge u=3  excess=1  visina=1
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=3
+relabel u=3 od h=1 na ha=3
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+push3  5  kolicina=1  (visina[u]=3, visina[v]=2, excess[u]=1)
+za5excess=1)
+konecen discharge u=3.(tocka)  excess=0
+
+ aktivno teme=5
+
+discharge u=5  excess=1  visina=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=5
+relabel u=5 od h=2 na ha=3
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+push5  2  kolicina=1  (visina[u]=3, visina[v]=2, excess[u]=1)
+za2excess=1)
+konecen discharge u=5.(tocka)  excess=0
+
+ aktivno teme=2
+
+discharge u=2  excess=1  visina=2
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=2
+relabel u=2 od h=2 na ha=4
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+push2  5  kolicina=1  (visina[u]=4, visina[v]=3, excess[u]=1)
+za5excess=1)
+konecen discharge u=2.(tocka)  excess=0
+
+ aktivno teme=5
+
+discharge u=5  excess=1  visina=3
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=5
+relabel u=5 od h=3 na ha=4
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+push5  3  kolicina=1  (visina[u]=4, visina[v]=3, excess[u]=1)
+za3excess=1)
+konecen discharge u=5.(tocka)  excess=0
+
+ aktivno teme=3
+
+discharge u=3  excess=1  visina=3
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=3
+relabel u=3 od h=3 na ha=5
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+push3  5  kolicina=1  (visina[u]=5, visina[v]=4, excess[u]=1)
+za5excess=1)
+konecen discharge u=3.(tocka)  excess=0
+
+ aktivno teme=5
+
+discharge u=5  excess=1  visina=4
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=5
+relabel u=5 od h=4 na ha=5
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+push5  2  kolicina=1  (visina[u]=5, visina[v]=4, excess[u]=1)
+za2excess=1)
+konecen discharge u=5.(tocka)  excess=0
+
+ aktivno teme=2
+
+discharge u=2  excess=1  visina=4
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=2
+relabel u=2 od h=4 na ha=6
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+push2  5  kolicina=1  (visina[u]=6, visina[v]=5, excess[u]=1)
+za5excess=1)
+konecen discharge u=2.(tocka)  excess=0
+
+ aktivno teme=5
+
+discharge u=5  excess=1  visina=5
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=5
+relabel u=5 od h=5 na ha=6
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+push5  3  kolicina=1  (visina[u]=6, visina[v]=5, excess[u]=1)
+za3excess=1)
+konecen discharge u=5.(tocka)  excess=0
+
+ aktivno teme=3
+
+discharge u=3  excess=1  visina=5
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=3
+relabel u=3 od h=5 na ha=7
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+push3  5  kolicina=1  (visina[u]=7, visina[v]=6, excess[u]=1)
+za5excess=1)
+konecen discharge u=3.(tocka)  excess=0
+
+ aktivno teme=5
+
+discharge u=5  excess=1  visina=6
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=5
+relabel u=5 od h=6 na ha=7
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+push5  2  kolicina=1  (visina[u]=7, visina[v]=6, excess[u]=1)
+za2excess=1)
+konecen discharge u=5.(tocka)  excess=0
+
+ aktivno teme=2
+
+discharge u=2  excess=1  visina=6
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=2
+relabel u=2 od h=6 na ha=8
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+push2  5  kolicina=1  (visina[u]=8, visina[v]=7, excess[u]=1)
+za5excess=1)
+konecen discharge u=2.(tocka)  excess=0
+
+ aktivno teme=5
+
+discharge u=5  excess=1  visina=7
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=5
+relabel u=5 od h=7 na ha=8
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+push5  3  kolicina=1  (visina[u]=8, visina[v]=7, excess[u]=1)
+za3excess=1)
+konecen discharge u=5.(tocka)  excess=0
+
+ aktivno teme=3
+
+discharge u=3  excess=1  visina=7
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=3
+relabel u=3 od h=7 na ha=9
+ proveri sosed v=0
+push3  0  kolicina=1  (visina[u]=9, visina[v]=8, excess[u]=1)
+konecen discharge u=3.(tocka)  excess=0
+
+ aktivno teme=1
+
+discharge u=1  excess=1  visina=0
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=1
+relabel u=1 od h=0 na ha=1
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+push1  4  kolicina=1  (visina[u]=1, visina[v]=0, excess[u]=1)
+za4excess=1)
+konecen discharge u=1.(tocka)  excess=0
+
+ aktivno teme=4
+
+discharge u=4  excess=1  visina=0
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+   -> E nema be. relabel u=4
+relabel u=4 od h=0 na ha=1
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+ proveri sosed v=5
+ proveri sosed v=6
+ proveri sosed v=7
+push4  7  kolicina=1  (visina[u]=1, visina[v]=0, excess[u]=1)
+konecen discharge u=4.(tocka)  excess=0
+
+Protok = 2
+2
+C:\Users\bozid\source\repos\Prog4-2.1-PR\Prog4-2.1-PR\x64\Debug\Prog4-2.1-PR.exe (process 68280) exited with code 0 (0x0).
+
+
+5 7
+0 2 99
+0 3 3
+1 4 99
+2 1 3
+2 3 2
+2 4 3
+3 1 6
+0 4
+ Prvo push od izvorot 0
+push0  2  kolicina=99  (visina[u]=5, visina[v]=0, excess[u]=2147483647)
+za2excess=99)
+push0  3  kolicina=3  (visina[u]=5, visina[v]=0, excess[u]=2147483548)
+za3excess=3)
+
+ aktivno teme=3
+
+discharge u=3  excess=3  visina=0
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+   -> E nema be. relabel u=3
+relabel u=3 od h=0 na ha=1
+ proveri sosed v=0
+ proveri sosed v=1
+push3  1  kolicina=3  (visina[u]=1, visina[v]=0, excess[u]=3)
+za1excess=3)
+konecen discharge u=3.(tocka)  excess=0
+
+ aktivno teme=1
+
+discharge u=1  excess=3  visina=0
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+   -> E nema be. relabel u=1
+relabel u=1 od h=0 na ha=1
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+push1  4  kolicina=3  (visina[u]=1, visina[v]=0, excess[u]=3)
+za4excess=3)
+konecen discharge u=1.(tocka)  excess=0
+
+ aktivno teme=4
+
+ aktivno teme=2
+
+discharge u=2  excess=99  visina=0
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+   -> E nema be. relabel u=2
+relabel u=2 od h=0 na ha=1
+ proveri sosed v=0
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+push2  4  kolicina=3  (visina[u]=1, visina[v]=0, excess[u]=99)
+ proveri sosed v=4
+   -> E nema be. relabel u=2
+relabel u=2 od h=1 na ha=2
+ proveri sosed v=0
+ proveri sosed v=1
+push2  1  kolicina=3  (visina[u]=2, visina[v]=1, excess[u]=96)
+za1excess=3)
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+push2  3  kolicina=2  (visina[u]=2, visina[v]=1, excess[u]=93)
+za3excess=2)
+ proveri sosed v=3
+ proveri sosed v=4
+   -> E nema be. relabel u=2
+relabel u=2 od h=2 na ha=6
+ proveri sosed v=0
+push2  0  kolicina=91  (visina[u]=6, visina[v]=5, excess[u]=91)
+konecen discharge u=2.(tocka)  excess=0
+
+ aktivno teme=3
+
+discharge u=3  excess=2  visina=1
+ proveri sosed v=1
+ proveri sosed v=2
+ proveri sosed v=3
+ proveri sosed v=4
+   -> E nema be. relabel u=3
+relabel u=3 od h=1 na ha=2
+ proveri sosed v=0
+ proveri sosed v=1
+push3  1  kolicina=2  (visina[u]=2, visina[v]=1, excess[u]=2)
+konecen discharge u=3.(tocka)  excess=0
+
+ aktivno teme=1
+
+discharge u=1  excess=5  visina=1
+ proveri sosed v=4
+push1  4  kolicina=5  (visina[u]=1, visina[v]=0, excess[u]=5)
+konecen discharge u=1.(tocka)  excess=0
+
+Protok = 11
+11
+C:\Users\bozid\source\repos\Prog4-2.1-PR\Prog4-2.1-PR\x64\Debug\Prog4-2.1-PR.exe (process 54216) exited with code 0 (0x0).
