@@ -1,0 +1,98 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <climits>
+using namespace std;
+
+unsigned long long vred(char c) {
+    return c - 'a' + 1;
+}
+
+int main() {
+
+    int brTest;
+    cin >> brTest;   // broj na test sluchai
+
+    while (brTest--) {
+
+        string tekst, pattern;     
+        cin >> tekst >> pattern;
+
+        int n = tekst.size();     
+        int m = pattern.size();    
+
+        // Ako patternot e podolg od tekstot znaci nemoze da se pojavi.
+        if (m > n) {
+            cout << "Not Found\n";
+            if (brTest) cout << "\n"; 
+            continue;
+        }
+
+        const unsigned long long baza = 31;
+
+        // praime baza^(m-1) za  da go trgneme leviot karakter od prozorot
+        unsigned long long st = 1;
+        for (int i = 0; i < m - 1; i++)
+            st *= baza;
+
+        unsigned long long hashpattern = 0;
+
+        // Hash na prviot prozor od tekstot 
+        unsigned long long hashProzor = 0;
+
+        // Presmetuvame hashovi
+        for (int i = 0; i < m; i++) {
+            hashpattern = hashpattern * baza + vred(pattern[i]);
+            hashProzor = hashProzor * baza + vred(tekst[i]);
+        }
+
+        vector<int> pozicii; // listata na site pozicii kaj sto se pojavuva patternot
+
+        // Proverka za prviot prozor
+        if (hashProzor == hashpattern) {
+            bool isto = true;
+            for (int i = 0; i < m; i++)
+                if (tekst[i] != pattern[i]) isto = false;
+
+            if (isto) pozicii.push_back(1);
+        }
+
+        // Sliding window se pomestuva od pozicija 2 do  n- m+1
+        for (int i = 1; i <= n - m; i++) {
+
+            // go briseme leviot karakter
+            // mnozime so baza za pomestuvanje
+            // go dodavame noviot karakter od desno
+            hashProzor = (hashProzor
+                         - vred(tekst[i - 1]) * st) * baza
+                         + vred(tekst[i + m - 1]);
+
+            // Ako hashovite se isti mozda e tocno
+            if (hashProzor == hashpattern) {
+
+                // proverka karakter po karakter
+                bool isto = true;
+                for (int k = 0; k < m; k++)
+                    if (tekst[i + k] != pattern[k]) isto = false;
+
+                if (isto) pozicii.push_back(i + 1); // za 1-baziran indeks
+            }
+        }
+
+        // Pecatenje rezultati
+        if (pozicii.empty()) {
+            cout << "Not Found\n";
+        } else {
+            cout << pozicii.size() << "\n";   //broj na pojavuvanja
+            for (int i = 0; i < (int)pozicii.size(); i++) {
+                if (i) cout << " ";
+                cout << pozicii[i];
+            }
+            cout << "\n";
+        }
+
+        if (brTest) cout << "\n";
+    }
+
+    return 0;
+}

@@ -1,0 +1,45 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+
+    string s, dobra;
+    int k;
+    cin >> s >> dobra >> k;
+
+    int n = s.size();
+
+    // losa[i] =1 ako elementot s[i] e losa bukva
+    vector<int> losa(n);
+    for (int i = 0; i < n; i++)
+        losa[i] = (dobra[s[i] - 'a'] == '0');
+
+    const long long base = 31;
+    const long long mod = 1000000007;
+
+    unordered_set<long long> pr;
+
+    // so rabin–karp
+    for (int i = 0; i < n; i++) {
+
+        long long h = 0;   // hash za momentalniot podstring
+        int brLosi = 0;
+
+        for (int j = i; j < n; j++) {
+
+            // ako e losa go zgolemuva brojot
+            brLosi += losa[j];
+
+            // ako ima pojse od k losi prekini
+            if (brLosi > k) break;
+            //azururame hash
+            h = (h * base + (s[j] - 'a' + 1)) % mod;
+
+            // stavame vo set
+            pr.insert(h);
+        }
+    }
+
+    cout << pr.size();
+    return 0;
+}

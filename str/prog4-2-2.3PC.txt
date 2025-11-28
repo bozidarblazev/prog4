@@ -1,0 +1,87 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+// funkcija sto presmetuva hash na string so rabin–karp
+unsigned long long hash(const string &a) {
+     const unsigned long long baza = 131; 
+    unsigned long long h = 0;
+    for (char c : a) {
+        h = h * baza + (c - 'a' + 1);
+     }
+    return h;
+}
+
+int main() {
+
+    string s;
+     cin >> s;
+    int n = s.size();
+
+    vector<int> rezultat(n+1, 0); 
+    // rezultat[k] e brojot na k-palindromi o cel string
+
+    // dp[i][j] e vrednosta na k-palindrom na podstringot s od i do j
+    vector<vector<int>> dp(n, vector<int>(n, 0));
+
+    // za site podstringovi
+    for (int i = 0; i < n; i++) {
+
+        for (int j = i; j < n; j++) {
+
+            string t = s.substr(i, j - i + 1);     // tekoven podstring
+
+            string r = t;
+            reverse(r.begin(), r.end());           
+
+            // ako dvata hashovi se isti znaci deka e palindrom k=1
+            if (hash(t) == hash(r)) {
+                 dp[i][j] = 1;
+            } 
+            else {
+                dp[i][j] = 0;
+                   } 
+
+            // ako ne e palindrom
+            if (dp[i][j] == 0) continue;
+
+            // akoe e palindrom i ima dolzina>=2
+             int dol = j - i + 1;
+
+            if (dol >= 2) {
+
+                int mid = dol / 2;
+
+                string levo = t.substr(0, mid);
+                string desno = t.substr(dol - mid, mid);
+
+                // proverka dali leva i desna polovina se isti
+                if (hash(levo) == hash(desno)) {
+
+                    // t e 2-palindrom akko polovinite mu se isti i se 1 palindromi.
+                    // za da proverime dali polovinite se 1palindromi gi gledame dp vrednostite za tie delovi
+                  
+                    if (dp[i][i + mid - 1] >= 1 &&
+                         dp[j - mid + 1][j] >= 1) {
+
+                        dp[i][j] = 2; // sega e 2-palindrom
+                    }
+                }
+            }
+
+            // ako e 1palindrom ili 2-palindrom go zgolemuvame brojot
+            if (dp[i][j] > 0) rezultat[dp[i][j]]++;
+        }
+    }
+
+    for (int k = 1; k <= n; k++) {
+        if (k > 1) cout << " ";
+          cout << rezultat[k];
+    }
+    cout << "\n";
+
+    return 0;
+}

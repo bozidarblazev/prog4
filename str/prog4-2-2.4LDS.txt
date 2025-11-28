@@ -1,0 +1,94 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+using namespace std;
+
+
+// Funkcija check length sto proveruva dali postoi duplikat podstring so dolzina L
+ //Ako postoi vrakja  indeks ako ne postoi vrakja-1
+int CL(const string& s, int L) {
+    int n = s.size();
+    if (L == 0) return -1;
+
+     const unsigned long long baza = 131;
+
+    // presmetuvame hash za prviot prozor
+     unsigned long long h = 0;
+    for (int i = 0; i < L; i++) {
+        h = h * baza + (s[i] - 'a' + 1);
+    }
+
+    // go cuvame u pair [hash, pocten index]
+     vector<pair<unsigned long long, int>> lista;
+    lista.push_back({ h, 0 });
+
+    //presmetuvame baza^(L-1) za da go izbriseme najleviot karakter 
+     unsigned long long p = 1;
+      for (int i = 1; i < L; i++) p *= baza;
+
+    //sliding window za site preostanati podstringovi
+    for (int start = 1; start + L <= n; start++) {
+        unsigned long long levo = (s[start - 1] - 'a' + 1);
+        unsigned long long desno = (s[start + L - 1] - 'a' + 1);
+
+        //brisenje na karakter lvo i dodavanje desno
+        h = h - levo * p;
+        h = h * baza + desno;
+
+         lista.push_back({ h, start });
+    }
+
+    // gi sortirame site hashovi, za da gi vidime duplikatite
+    sort(lista.begin(), lista.end());
+
+    for (int i = 1; i < (int)lista.size(); i++) {
+        if (lista[i].first == lista[i - 1].first) {
+             //za duplikat proveruvame so  compare
+            int a = lista[i].second;
+            int b = lista[i - 1].second;
+
+            if (s.compare(a, L, s, b, L) == 0) {
+                return a;  // ako ima najden duplikat
+            }
+        }
+    }
+
+    return -1; //nema duplikat
+}
+
+string longestDupSubstring(string s) {
+    int n = s.size();
+
+    int lo = 1, hi = n - 1;
+    int bestLen = 0;
+    int bestStart = -1;
+
+    // binary search [bajnari srch]
+    while (lo <= hi) {
+        int mid = (lo + hi) / 2;
+
+        int pos = CL(s, mid);
+        if (pos != -1) {
+            //ako ima duplikat so dolzina mid togas probaj pogolema
+             bestLen = mid;
+             bestStart = pos;
+             lo = mid + 1;
+        }
+        else {
+            hi = mid - 1;
+        }
+    }
+
+    if (bestStart == -1) return "";
+    return s.substr(bestStart, bestLen);
+}
+
+int main() {
+   
+    string s;
+     cin >> s;
+
+    cout << longestDupSubstring(s) << "\n";
+    return 0;
+}
