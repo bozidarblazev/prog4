@@ -1,0 +1,96 @@
+#include <iostream>
+#include <string>
+#include <algorithm> 
+#include <fstream>  
+using namespace std;
+
+
+struct TrieNode {
+    TrieNode* deca[26]; // pokazuvaci kon deca za a do z
+    bool kraj;     // dali ovde zavrsuva eden zbor
+
+    TrieNode() {
+        for (int i = 0; i < 26; i++){
+            deca[i] = NULL; // prvo site deca se NULL
+        }
+        kraj = false;     // prvo ne e kraj na zbor
+    }
+};
+
+TrieNode root;
+
+void vnesi(string s) {
+    // go prevrtuvame stringot
+    reverse(s.begin(), s.end());
+
+    TrieNode* pero = &root;
+
+    // dodeka stringot ne e prazen
+    while (s.size()) {
+
+        // s.back() zasto e obratno
+        int in = s.back() - 'a'; // indeks na taa bukva vo nizata
+
+        // Ako nema dete za taa bukva, kreiraj nov node
+        if (!pero->deca[in])
+            pero->deca[in] = new TrieNode();
+
+        // Spusti se do deteto
+        pero = pero->deca[in];
+
+        s.pop_back();
+    }
+
+    // oznaci deka ovde zavrsuva eden zbor
+    pero->kraj = true;
+}
+
+bool postoi(string s) {
+    reverse(s.begin(), s.end());
+
+    TrieNode* pero = &root;
+
+    while (s.size()) {
+        int in = s.back() - 'a';
+
+        // ako nema granka za taa bukva zborot ne postoi
+        if (!pero->deca[in])
+            return false;
+
+        pero = pero->deca[in];
+        s.pop_back();
+    }
+
+    // ako stignavme do kraj proveri dali e kraj na zbor
+    return pero->kraj;
+}
+
+bool MB(const string &s) { // proveruvame dali stringot se sostoi isklucivo od mali bukvi
+    for (char c : s) {
+        if (c < 'a' || c > 'z')
+            return false;
+    }
+    return true;
+}
+
+int main() {
+    ifstream file("test.txt"); 
+
+    if (!file.is_open()) {
+        cout << "ne se otvara" << endl;
+        return 1;
+    }
+
+    string ss;
+    // citaj red po red.vo sekoj red ima eden zbor
+    while (getline(file, ss)) {
+        if (ss.size() == 0) continue;
+// Proveri dali zborot sodrzi samo mali bukvi
+if (!MB(ss)) continue;
+
+vnesi(ss);
+    }
+
+    file.close();
+    return 0;
+}
