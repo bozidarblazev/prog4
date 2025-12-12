@@ -1,0 +1,168 @@
+#include <iostream>
+#include <string>
+#include <algorithm> 
+#include <fstream>  
+using namespace std;
+
+struct TrieNode {
+    // deca indeksirani so prva bukva na sledniot label (ako postoi)
+    TrieNode* deca[26];
+
+    // label e niza od karakteri 
+    // (empty string za root)
+    string label;
+
+    // dali ovoj node oznacuva kraj na celosen zbor
+    bool kraj;
+
+    TrieNode(const string &lab = "") : label(lab), kraj(false) {
+        for (int i = 0; i < 26; i++)
+            deca[i] = NULL;
+    }
+};
+
+// koren so prazen label
+TrieNode root("");
+
+// funkcija koja vrakja kolku karakteri se isti od pocetok 
+int commonPrefixLen(const string &a, const string &b) {
+    int n = min((int)a.size(), (int)b.size());
+    int i = 0;
+    while (i < n && a[i] == b[i]) i++;
+    return i;
+}
+
+// proveruva dali stringot sodrzi samo mali bukvi 
+bool MB(const string &s) {
+    for (char c : s) {
+        if (c < 'a' || c > 'z') return false;
+    }
+    return true;
+}
+
+void vnesi(string s) {
+    TrieNode* pero = &root;
+    string nov = s; // sto ostanuva da se vnesuva
+
+    // dodeka ima karakteri sto treba da gi staime
+    while (!nov.empty()) {
+        int in = nov[0] - 'a';
+
+        //ako nema dete so taa pocetna bukva napravi nov jazol so label= nov
+        if (!pero->deca[in]) {
+            TrieNode* novo = new TrieNode(nov);
+            novo->kraj = true;       // celosno staen zbor
+            pero->deca[in] = novo;
+            return;
+        }
+
+        //ako ima dete
+        TrieNode* child = pero->deca[in];
+        const string &lab = child->label;
+
+        // najdi common prefix pomegju nov i lab
+        int L = commonPrefixLen(nov, lab);
+
+        if (L == (int)lab.size()) {
+            // labelata na child e celosno prefiks na nov
+             // pomesti se vo child i prefrli L bukvi od nov
+            nov = nov.substr(L);
+            pero = child;
+             // ako nov e prazno, oznaci kraj
+            if (nov.empty()) {
+                child->kraj = true;
+                return;
+            }
+            //ovoj del e za ako delumno se poklapaat
+        } else {
+            // Potrebno e da go podelime postoeckoto dete
+             // praime novo teme so label= prvite L karakteri
+            string midLabel = lab.substr(0, L);
+            string childSuffix = lab.substr(L); //ostatokot od postoeckoot dete
+             TrieNode* mid = new TrieNode(midLabel);
+
+            TrieNode* suffixNode = new TrieNode(childSuffix);
+             suffixNode->kraj = child->kraj;
+
+            //gi prenesuvame decata od staroto dete na suffixNode
+            for (int i = 0; i < 26; i++) {
+                suffixNode->deca[i] = child->deca[i];
+            }
+
+            int sufin = childSuffix[0] - 'a';
+            mid->deca[sufin] = suffixNode;
+
+            // pointerot na roditelot namesto staroto sega treba da bide mid
+            pero->deca[in] = mid;
+
+            //staroto
+            delete child;
+            
+            string novSuffix = nov.substr(L);
+            if (novSuffix.empty()) {
+                // Ako nov se sovpagja so mid label oznaci kraj
+                mid->kraj = true;
+                return;
+            } else {
+                // Dodaj novo teme za novSuffix ispod mid
+                int newin = novSuffix[0] - 'a';
+                TrieNode* novo = new TrieNode(novSuffix);
+                novo->kraj = true;
+                mid->deca[newin] = novo;
+                return;
+            }
+        }
+    }
+
+    // ako stignavme do tuka nov e prazno togas pero oznaci kraj
+    pero->kraj = true;
+}
+
+bool postoi(string s) {
+    TrieNode* pero = &root;
+    string nov = s;
+
+    while (!nov.empty()) {
+        int in = nov[0] - 'a';
+        TrieNode* child = pero->deca[in];
+        if (!child) return false;
+
+        const string &lab = child->label;
+        int L = commonPrefixLen(nov, lab);
+
+        if (L != (int)lab.size()) {
+            // postoji delno poklopuvanje zborot ne postoi
+            return false;
+        }
+
+        // label e prefiks na nov izedi go i prodolzi
+        nov = nov.substr(L);
+        pero = child;
+    }
+
+    // ako nema vise karakteri vo nov, proveri dali tekovnoto teme e kraj
+    return pero->kraj;
+}
+
+int main() {
+    ifstream file("test.txt"); 
+
+    if (!file.is_open()) {
+        cout << "ne se otvara" << endl;
+        return 1;
+    }
+
+    string ss;
+    // citaj red po red. vo sekoj red ima eden zbor
+    while (getline(file, ss)) {
+        if (ss.size() == 0) continue;
+
+        // Proveri dali zborot sodrzi samo mali bukvi
+        if (!MB(ss)) continue;
+
+        vnesi(ss);
+    }
+
+    file.close();
+    return 0;
+}
