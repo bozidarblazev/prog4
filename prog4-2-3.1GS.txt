@@ -1,0 +1,53 @@
+#include <iostream>
+#include <cstring>
+using namespace std;
+
+struct GS {
+    int l;  // doz. na string
+    char kratki[12];  
+
+    // konstruktor
+    GS(const char* s) {
+        l = strlen(s);
+        if (l <= 12) {
+            strcpy(kratki, s); 
+        } else {
+            // ako e podolgo od 12 zaboravame optimizacija
+            strncpy(kratki, s, 12);
+            kratki[12] = '\0';
+        }
+    }
+};
+
+// Operator== za sporedba
+bool operator==(const GS& a, const GS& b) {
+    if (a.l != b.l) return false;
+    return strncmp(a.kratki, b.kratki, 12) == 0;
+}
+
+// Operator+ za spojuvanje stringovi so dolzina do 12
+GS operator+(const GS& a, const GS& b) {
+    char t[25] = {}; // najvise 12+12+1
+    strcpy(t, a.kratki);
+    strcat(t, b.kratki);
+    return GS(t);
+}
+
+void print(const GS& a) {
+    cout << a.kratki;
+}
+
+int main() {
+    GS s1("ss");
+    GS s2("waffenss");
+    GS s3("sswaffenss");
+
+    GS s4 = s1 + s2;
+    cout << (s4 == s3) << endl; 
+    cout << (s1 == s2) << endl;
+    cout << (s1 == s3) << endl;  
+    print(s1); cout << endl;
+    print(s3); cout << endl;
+
+    return 0;
+}
