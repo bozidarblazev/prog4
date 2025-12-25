@@ -1,0 +1,100 @@
+#include <iostream>   
+#include <fstream>    
+#include <string>     
+#include <algorithm>  
+#include <windows.h> 
+
+using namespace std;
+
+//  Sekoj TrieNode ima niza od pokazuvaci kon deca za site mozni karakteri boolean kraj
+
+struct TrieNode {
+
+    // za sekoj mozenkarakter cuvame pokazuvac kon sledniot TrieNode
+    TrieNode* deca[256];
+
+    //ako kraj=true togas toa e kraj na zbor
+    bool kraj;
+
+    TrieNode() {
+        this->kraj = false;
+
+        for (int i = 0; i < 256; i++) {
+            this->deca[i] = nullptr;
+        }
+    }
+};
+
+TrieNode root;
+
+void vnesi(const string& s) {
+
+     //pero pokazuva na momentalnoto teme
+    TrieNode* pero = &root;
+
+    //od kraj kon pocetok
+    for (auto kar = s.rbegin(); kar != s.rend(); ++kar) {
+        // unsigned char za da nema negativni indeksi
+        unsigned char c = *kar;
+
+        //ako nema dete za ovoj karakter
+        if (pero->deca[c] == nullptr) {
+            // kreirame novoteme
+            pero->deca[c] = new TrieNode();
+        }
+
+        //ideme na sleden
+        pero = pero->deca[c];
+    }
+
+     // oznacuvame deka ovde zavrsuva zbor
+    pero->kraj = true;
+}
+
+bool postoi(const string& s) {
+
+    // pocnuvame od root
+    TrieNode* pero = &root;
+     // od kraj
+    for (auto kar = s.rbegin(); kar != s.rend(); ++kar) {
+
+        unsigned char c = *kar;
+
+        // ako nema takvo dete -> zborot ne postoi
+        if (pero->deca[c] == nullptr)
+            return false;
+
+        // prodolzuvame ponatamu
+        pero = pero->deca[c];
+    }
+
+    // ako sme stignale do kraj i toa e kraj na zbortogas zborot  postoi
+    return pero->kraj;
+}
+
+int main() {
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+
+    ifstream file("test.txt");
+
+    if (!file.is_open()) {
+        cout << "Ne moze da se otvori\n";
+        return 1;
+    }
+
+    string s;
+
+    while (getline(file, s)) {
+
+        if (!s.empty())
+            vnesi(s);
+    }
+
+    file.close();
+
+    // primer za proverka na zbor
+    // cout << postoi("Pero") << endl;
+
+    return 0;
+}
