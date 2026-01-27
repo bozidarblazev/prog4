@@ -1,0 +1,147 @@
+#include <iostream>   
+#include <string>     
+#include <vector>     
+#include <algorithm>              
+using namespace std;                    
+struct BR{  // Struktura za golem broj
+    string num;                         // Brojot se cuva kako string
+    // Trga vodecki nuli, ama ostava barem edna cifra za ako se site nuli 
+    string trgninuli(string s) {             // Pomosna funkcija za trganje nuli
+        while (s.size() > 1 && s[0] == '0') // Dodeka ima poveke od 1 znak i prviot e 0
+            s.erase(s.begin());         // jabrise prvata nula
+        return s;                  
+    }
+
+    BR sob(BR b) { // Funkcija za sobiranje this i b
+        string x = this->num;   // Tekovniot broj (this)
+        string y = b.num;    // Vtoriot broj
+
+        reverse(x.begin(), x.end());// svrti go x zasobiranje od desno
+        reverse(y.begin(), y.end());// svrti go y za sobiranje od desno
+
+        string res = "";            // Rezultatot kako string
+        int pamti = 0;           // ostatok za prenos
+
+        for (int i = 0; i < max(x.size(), y.size()); i++) { // Odime niz cifrite
+            int d1 = (i < x.size()) ? x[i] - '0' : 0;   // Cifra od x ili 0
+            int d2 = (i < y.size()) ? y[i] - '0' : 0;       // Cifra od y ili 0
+
+            int sum = d1 + d2 + pamti;  // Sobiranje so prenos
+            res.push_back(sum % 10 + '0'); // Ja zemame poslednata cifra
+            pamti = sum / 10;           // Go cuvame noviot prenos
+        }
+
+        if (pamti)              // Ako ostanal prenos
+            res.push_back(pamti + '0'); // Dodadi go na kraj
+
+        reverse(res.begin(), res.end()); //svrti nazad vo normalen redosled
+        return { trgninuli(res) };  // vrati go rezultatot bez  nuli napred
+    }
+
+    BR odz(BR b) {           // Funkcija za odzemanje
+        string x = this->num;   // Tekovniot broj
+        string y = b.num;    // vtoriot broj
+
+        reverse(x.begin(), x.end());  // svrti go x
+        reverse(y.begin(), y.end());   // svrti go y
+
+        string res = "";  // Rezultatot
+        int pero = 0;    // Pozajmi
+
+        for (int i = 0; i < x.size(); i++) { // Odime niz cifrite
+            int d1 = x[i] - '0' - pero;    // Tekovna cifra minus toa sto pamtis
+            int d2 = (i < y.size()) ? y[i] - '0' : 0; // Cifra od y ili 0
+
+            if (d1 < d2) {  // Ako nema dovolno za odzemanje
+                d1 += 10;    // zemi 10
+                pero = 1;  // Obelezi dek pamtis
+            } else {
+                pero = 0;     
+            }
+
+            res.push_back(d1 - d2 + '0'); // Dodaj ja razlikata
+        }
+
+        reverse(res.begin(), res.end()); // svrti go rezultatot
+        return { trgninuli(res) };           // Vrati bez vodecki nuli
+    }
+
+    BR mnoz(BR b) {           // Funkcija za mnozenje
+        string x = this->num;    // Tekovniot broj
+        string y = b.num;   // vtoriot broj
+
+        reverse(x.begin(), x.end());  // svrti go x
+        reverse(y.begin(), y.end());    // svrti go y
+
+        vector<int> res(x.size() + y.size(), 0); // niza za cifrite na rezultatot
+
+        for (int i = 0; i < x.size(); i++) { // Za sekoja cifra od x
+            for (int j = 0; j < y.size(); j++) { // Za sekoja cifra od y
+                res[i + j] += (x[i] - '0') * (y[j] - '0'); // klasicno mnozenje
+            }
+        }
+
+        for (int i = 0; i < res.size(); i++) { //so prenosi
+            int pamti = res[i] / 10;    // Kolku desetki ima
+            res[i] %= 10;               // tekovna cifra
+            if (i + 1 < res.size())
+                res[i + 1] += pamti;
+        }
+
+        string s = "";  // Rezultat kako string
+        for (int d : res)   // Za sekoja cifra
+            s.push_back(d + '0');  // Dodadi ja vo string
+
+        reverse(s.begin(), s.end());// svrti vo normalen redosled
+        return { trgninuli(s) }; // Vrati bez nuli
+    }
+
+    bool ge(string a, string b) {    // Pomosna funkcija za sporeduvanje
+        if (a.size() != b.size())  // Ako dolzinite se razlicni
+            return a.size() > b.size(); // podolgiot e pogolem broj
+        return a >= b;       //ako ne togas sporeduvame
+    }
+
+    BR del(BR b) {             // Funkcija za delenje celobrojno bez ostatok
+        string x = this->num;   // delitel
+        string y = b.num;    // Delitel
+
+        string mm = "";     // tekoven del
+        string res = "";     // RezulJtat
+
+        for (int i = 0; i < x.size(); i++) { // Odime niz site cifri na x
+            mm.push_back(x[i]);        // Dodaj nova cifra vo mm
+            mm = trgninuli(mm);  // trgame nuli napred
+
+            int cnt = 0; // Kolku pati sobira y vo mm
+
+            while (ge(mm, y)) {     // dodeka mm >= y
+                BR t1{ mm };    // prai broj od mm
+                BR t2{ y };     // prai BR od y
+                mm = t1.odz(t2).num; // Odzemi y od mm
+                cnt++;                  
+            }
+
+            res.push_back(cnt + '0'); // Dodavanje na cifrata vo rezultat
+        }
+
+        return { trgninuli(res) };// Vrakja bez nuli napred
+    }
+};
+
+int main() {                            
+    BR a{ "343448864513154312538465235623566412536562325532563" }; 
+    BR b{ "397186173535361513555515" };                                 
+
+    BR c = a.sob(b);               
+    BR d = a.odz(b);            
+    BR e = a.mnoz(b);          
+    BR f = a.del(b);           
+
+    cout << c.num << "\n";             
+    cout << d.num << "\n";              
+    cout << e.num << "\n";              
+    cout << f.num << "\n";              
+
+    return 0;                         
+}
