@@ -1,0 +1,41 @@
+int dijkstra(int b) {
+    int i = 3;        
+    int br_prosti = 1;   //go broime 2
+
+    vector<int> prosti;
+    prosti.push_back(2);  //racno go stavame 2
+
+    priority_queue<
+        pair<int,int>,
+        vector<pair<int,int>>,
+        compare
+    > pq;
+
+    int pero = 2;
+    pq.push({pero, pero * pero});   //[ 2 , 4 ]
+
+    while (i <= b)
+    {
+
+        // ako e prost
+        if (pq.top().second > i)
+        {
+            pq.push({i, i * i}); // go stavame vo pool-ot
+            br_prosti++;
+            prosti.push_back(i);   //go dodavame vo prostite
+        }
+        //ako e slozen
+        else
+        {
+            while (pq.top().second <= i)
+            {
+                auto pero = pq.top();
+                pq.pop();
+                pero.second += pero.first;
+                pq.push(pero);
+            }
+        }
+        i++;
+    }
+    return br_prosti;
+}
