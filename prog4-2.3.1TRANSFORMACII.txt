@@ -1,0 +1,105 @@
+#include <iostream>
+#include <cmath>
+#include <vector>
+#include <sstream>
+#include <fstream>
+using namespace std;
+//funkcija za mnozenje na vektor redica so matrica 3x3
+void mnozi(const vector<float>& p, const float matrica[3][3], vector<float>& rezultat) {
+    // Odi po koloni na matricata
+    for (int kol=0;kol<3;kol++) {
+           rezultat[kol] = 0;   // Sekogas resetirame pred sobiranje
+        //mnozenje na matrici
+        for (int red = 0; red < 3; red++) {
+            rezultat[kol] += p[red] * matrica[red][kol];
+        }
+    }
+}
+
+
+//funkcija za rotacija na tocka okolu koordinatniot pocetok
+vector<float> rotacija(float x, float y, float agol) {
+    vector<float> tochka = {x, y, 1};
+    //matrica za rotacija
+    float matricaRotacija[3][3] = {
+        {cos(agol), -sin(agol), 0},
+        {sin(agol),  cos(agol), 0},
+        {0, 0, 1}
+    };
+    vector<float> rezultat(3, 0);
+    mnozi(tochka, matricaRotacija, rezultat);
+
+    return rezultat;
+}
+
+
+//funkcija za translacija na dadena tocka
+vector<float> translacija(float x, float y, float dx, float dy) {
+    vector<float> tochka = {x, y, 1};
+    // Matrica za translacija
+    float matricaTranslacija[3][3] = {
+        {1, 0, 0},
+        {0, 1, 0},
+        {dx, dy, 1}
+    };
+    vector<float> rezultat(3, 0);
+    mnozi(tochka, matricaTranslacija, rezultat);
+
+    return rezultat;
+}
+
+
+//funkcija za skaliranje
+vector<float> skaliranje(float x, float y, float koef) {
+    vector<float> tochka = {x, y, 1};
+    // Matrica za skaliranje
+    float matricaSkaliranje[3][3] = {
+        {koef, 0, 0},
+        {0, koef, 0},
+        {0, 0, 1}
+    };
+    vector<float> rezultat(3, 0);
+    mnozi(tochka, matricaSkaliranje, rezultat);
+
+    return rezultat;
+}
+
+
+int main() {
+    ifstream file("C:\\Users\\bozid\\Downloads\\square.obj");
+    //sekoj vnatresen vektor vo teminja pretstavuva edna tochka x,y,w
+    vector<vector<float>> teminja;
+
+    string linija;
+
+    if (file.is_open()) {
+
+        while (getline(file, linija)) {
+
+            // Proveruvame dali linijata pocnuva so "v "
+            if (linija.rfind("v ", 0) == 0) {
+                istringstream tok(linija);
+                char ignoriraj;
+                float x, y, z;
+                tok >> ignoriraj >> x >> y >> z;
+                teminja.push_back({x, y, z});
+            }
+        }
+    }
+
+    for (int i = 0; i < teminja.size(); i++) {
+        // 1. Rotacija za pi/4
+        vector<float> posleRotacija=rotacija(teminja[i][0], teminja[i][1], M_PI / 4);
+        // 2. Translacija za 2 po x
+        vector<float> posleTranslacija=translacija(posleRotacija[0], posleRotacija[1], 2, 0);
+        // 3. Skaliranje za 4
+        vector<float> posleSkaliranje=skaliranje(posleTranslacija[0], posleTranslacija[1], 4);
+        // Pecatenje na krajnite koordinati
+        for (float vrednost : posleSkaliranje) {
+            cout << vrednost << " ";
+        }
+        cout <<'\n';
+    }
+
+    return 0;
+}
