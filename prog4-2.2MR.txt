@@ -1,0 +1,74 @@
+#include <iostream>
+#include <cstdlib> 
+using namespace std;
+
+int modPow(int a, int eksp, int mod) {
+    int result = 1;
+    a = a % mod;
+
+    while (eksp > 0) { //ako eksponentot e neparen
+        if (eksp % 2 == 1) {
+            result = (result * a) % mod;
+        }
+        a = (a * a) % mod;       
+        eksp = eksp / 2;
+    }
+
+    return result;
+}
+
+// proveruva dali e slozen broj
+bool dali_e_slozen(int n, int a, int d, int s) {
+    int x = modPow(a, d, n);
+    // ako dobivame 1 ili n-1 mozno e da e pros
+if (x == 1||x == n - 1)
+        return false;
+// pravime s-1 pati kvadriranje
+    for (int i = 1; i < s; i++) {
+        x = (x*x) % n;
+
+        if (x == n - 1)
+             return false;
+    }
+    // ako ne najdeme n-1 sigurnoe slozen
+    return true;
+}
+
+// glavna funkcija za Miller rabin
+bool dali_e_pros(int n) {
+    // mali slucai
+    if (n < 2) return false;
+    if (n == 2 || n == 3) return true;
+    if (n % 2 == 0) return false;
+
+    // n-1 = d * 2^s
+    int d = n - 1;
+    int s = 0;
+
+    while (d % 2 == 0) {
+        d = d / 2;
+        s++;
+    }
+
+    // pravime nekolku testovi
+    for (int i = 0; i < 5; i++) {
+        int a = 2 + rand() % (n - 3); // slucaen broj
+
+        if (dali_e_slozen(n, a, d, s))
+            return false; // slozen
+    }
+
+    return true; // verojatno e prost
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+   if (dali_e_pros(n))
+        cout << "Brojot e pros.(tocka)" << endl;
+    else
+        cout << "Brojot ne e prost, ama korisnikot e" << endl;
+
+    return 0;
+}
